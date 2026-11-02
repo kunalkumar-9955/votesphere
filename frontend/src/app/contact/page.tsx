@@ -130,7 +130,7 @@ export default function ContactPage() {
                 <div className="mt-4 rounded-2xl border border-primary-500/20 bg-white/5 p-4 text-sm text-gray-200">
                   {responseMessage}
                 </div>
-              )
+              )}
             </form>
           </motion.div>
 
