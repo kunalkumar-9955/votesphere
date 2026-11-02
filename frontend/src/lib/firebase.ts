@@ -6,7 +6,7 @@ import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 
 // 🔥 Firebase Config
 const firebaseConfig = {
-  apiKey:            "AIzaSyCEIGSIWqSItxSEy3s9awQwrR-mWmIPLY8",
+  apiKey:            process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
   authDomain:        "votingsystem-4d9c8.firebaseapp.com",
   projectId:         "votingsystem-4d9c8",
   storageBucket:     "votingsystem-4d9c8.firebasestorage.app",

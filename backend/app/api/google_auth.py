@@ -1,3 +1,4 @@
+import os
 """
 Google OAuth via Firebase ID Token verification.
 Frontend Firebase se Google login karta hai → ID token milta hai →
@@ -30,7 +31,8 @@ def verify_firebase_token(id_token: str) -> dict:
     Simple HTTP verification — no extra library needed.
     """
     try:
-        url = f"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCEIGSIWqSItxSEy3s9awQwrR-mWmIPLY8"
+        fb_key = os.getenv("FIREBASE_WEB_API_KEY", os.getenv("GOOGLE_API_KEY", ""))
+        url = f"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={fb_key}"
         data = json.dumps({"idToken": id_token}).encode()
         req = urllib.request.Request(url, data=data,
                                      headers={"Content-Type": "application/json"})

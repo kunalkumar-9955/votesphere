@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/votesphere"
+    DATABASE_URL: str = "postgresql://localhost:5432/votesphere"
     SECRET_KEY: str = "changeme-super-secret-key-min-32-characters-long"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
