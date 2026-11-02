@@ -1,0 +1,36 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Profile avatars — sirf apna upload kar sako
+    match /avatars/{userId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size < 2 * 1024 * 1024  // Max 2MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Candidate images — org admin upload kar sakta hai
+    match /candidates/{electionId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.resource.size < 5 * 1024 * 1024  // Max 5MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Organization logos
+    match /org-logos/{orgId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.resource.size < 2 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Election reports (PDF) — sirf read
+    match /reports/{electionId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if false; // Sirf backend upload karta hai
+    }
+  }
+}

@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users — sirf apna data read/write kar sakte hain
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Organizations — members read kar sakte hain, admin write
+    match /organizations/{orgId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+           in ["super_admin", "org_admin"];
+    }
+
+    // Elections — sabhi authenticated users read, admin write
+    match /elections/{electionId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+           in ["super_admin", "org_admin"];
+    }
+
+    // Votes — sirf apna vote dekh sako, write once
+    match /votes/{voteId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false; // Vote change nahi ho sakta
+    }
+
+    // Notifications — sirf apni notifications
+    match /notifications/{notifId} {
+      allow read, write: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // Audit logs — sirf super admin
+    match /audit_logs/{logId} {
+      allow read: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+           == "super_admin";
+      allow write: if false; // Sirf backend write karta hai
+    }
+  }
+}
